@@ -4,17 +4,24 @@ import Logo from './components/logo/Logo';
 import ImageLinkForm from './components/imagelinkform/ImageLinkForm';
 import FaceRecognition from './components/facerecognition/FaceRecognition';
 import Rank from './components/rank/Rank';
-import ParticlesBg from 'particles-bg'
+import ParticlesBg from 'particles-bg';
 import { useState } from 'react';
+
+const faceDetectionApi = 'https://api.clarifai.com/v2/models/face-detection/versions/6dc7e46bc9124c5c8824be4822abe105/outputs';
 
 function App() {
 
-  const [imageUrl, setImageUrl] = useState('https://samples.clarifai.com/face-det.jpg');
+  const [imageUrl, setImageUrl] = useState('');
   const [input, setInput] = useState('');
+  const [box, setBox] = useState({});
   const onInputChange = (event) => setInput(event.target.value);
   const onButtonSubmit = () => {
     setImageUrl(input);
-    predict(imageUrl);
+    fetch(faceDetectionApi, getRequestBody(input))
+      .then(response => response.json())
+      .then(calculateFaceLocation)
+      .then(setBox)
+      .catch(error => console.log('error', error));
   }
 
   return (
@@ -27,48 +34,51 @@ function App() {
         onInputChange={onInputChange}
         onButtonSubmit={onButtonSubmit}
       />
-      <FaceRecognition imageUrl={imageUrl}/>
+      <FaceRecognition
+        imageUrl={imageUrl}
+        box={box}
+      />
     </div>
   );
 }
 
-function predict(imageUrl) {
-  const USER_ID = 'pavanbaloju';
-    const PAT = 'e7299f110b3540829ee80279e7526851';
-    const APP_ID = 'my-first-application';
-    const MODEL_ID = 'face-detection';
-    const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';  
-    const IMG_URL = 'https://samples.clarifai.com/face-det.jpg' 
-
-    const raw = JSON.stringify({
-        "user_app_id": {
-            "user_id": USER_ID,
-            "app_id": APP_ID
-        },
-        "inputs": [
-            {
-                "data": {
-                    "image": {
-                        "url": IMG_URL
-                    }
-                }
+const getRequestBody = (imageUrl) => {
+  return {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Key e7299f110b3540829ee80279e7526851'
+    },
+    body: JSON.stringify({
+      "user_app_id": {
+        "user_id": 'pavanbaloju',
+        "app_id": 'my-first-application'
+      },
+      "inputs": [
+        {
+          "data": {
+            "image": {
+              "url": imageUrl
             }
-        ]
-    });
+          }
+        }
+      ]
+    })
+  };
+}
 
-    const requestOptions = {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Key ' + PAT
-        },
-        body: raw
-    };
+const calculateFaceLocation = (data) => {
+  const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+  const image = document.getElementById('inputimage');
+  const width = Number(image.width);
+  const height = Number(image.height);
 
-    fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
-        .then(response => response.json())
-        .then(result => console.log(result.outputs[0].data.regions[0].region_info.bounding_box))
-        .catch(error => console.log('error', error));
+  return {
+    leftCol: clarifaiFace.left_col * width,
+    topRow: clarifaiFace.top_row * height,
+    rightCol: width - (clarifaiFace.right_col * width),
+    bottomRow: height - (clarifaiFace.bottom_row * height)
+  }
 }
 
 export default App;
