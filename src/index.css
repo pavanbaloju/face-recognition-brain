@@ -5,6 +5,10 @@ body {
   background: linear-gradient(89deg, #FF5EDF 0%, #0468DE 100%);
 }
 
+button{
+  cursor: pointer;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
