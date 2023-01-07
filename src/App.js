@@ -6,16 +6,19 @@ import FaceRecognition from './components/facerecognition/FaceRecognition';
 import Rank from './components/rank/Rank';
 import ParticlesBg from 'particles-bg';
 import { useEffect, useState } from 'react';
+import SignIn from './components/signin/SignIn';
 
 const faceDetectionApi = 'https://api.clarifai.com/v2/models/face-detection/versions/6dc7e46bc9124c5c8824be4822abe105/outputs';
 
-function App() {
+const App = () => {
 
   const [imageUrl, setImageUrl] = useState('');
   const [input, setInput] = useState('');
   const [box, setBox] = useState({});
+  const [route, setRoute] = useState('signin')
   const onInputChange = (event) => setInput(event.target.value);
   const onButtonSubmit = () => setImageUrl(input);
+  const onRouteChange = (route) => setRoute(route);
 
   useEffect(() => {
     if (imageUrl) {
@@ -23,24 +26,27 @@ function App() {
         .then(response => response.json())
         .then(calculateFaceLocation)
         .then(setBox)
-        .catch(error => console.log('error', error));
+        .catch(error => console.log('Something went wrong..', error));
     }
   }, [imageUrl]);
 
   return (
     <div className="App">
       <ParticlesBg type="circle" bg={true} />
-      <Navigation />
-      <Logo />
-      <Rank />
-      <ImageLinkForm
-        onInputChange={onInputChange}
-        onButtonSubmit={onButtonSubmit}
-      />
-      <FaceRecognition
-        imageUrl={imageUrl}
-        box={box}
-      />
+      <Navigation onRouteChange={onRouteChange}/>
+      {route === 'signin'
+        ? <SignIn onRouteChange={onRouteChange}/>
+        : <div> <Logo />
+          <Rank />
+          <ImageLinkForm
+            onInputChange={onInputChange}
+            onButtonSubmit={onButtonSubmit}
+          />
+          <FaceRecognition
+            imageUrl={imageUrl}
+            box={box}
+          /></div>
+      }
     </div>
   );
 }
