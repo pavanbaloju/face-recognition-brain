@@ -5,7 +5,7 @@ import ImageLinkForm from './components/imagelinkform/ImageLinkForm';
 import FaceRecognition from './components/facerecognition/FaceRecognition';
 import Rank from './components/rank/Rank';
 import ParticlesBg from 'particles-bg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const faceDetectionApi = 'https://api.clarifai.com/v2/models/face-detection/versions/6dc7e46bc9124c5c8824be4822abe105/outputs';
 
@@ -15,14 +15,17 @@ function App() {
   const [input, setInput] = useState('');
   const [box, setBox] = useState({});
   const onInputChange = (event) => setInput(event.target.value);
-  const onButtonSubmit = () => {
-    setImageUrl(input);
-    fetch(faceDetectionApi, getRequestBody(input))
-      .then(response => response.json())
-      .then(calculateFaceLocation)
-      .then(setBox)
-      .catch(error => console.log('error', error));
-  }
+  const onButtonSubmit = () => setImageUrl(input);
+
+  useEffect(() => {
+    if (imageUrl) {
+      fetch(faceDetectionApi, getRequestBody(imageUrl))
+        .then(response => response.json())
+        .then(calculateFaceLocation)
+        .then(setBox)
+        .catch(error => console.log('error', error));
+    }
+  }, [imageUrl]);
 
   return (
     <div className="App">
