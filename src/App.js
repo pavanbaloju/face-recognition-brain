@@ -18,6 +18,7 @@ const App = () => {
   const [box, setBox] = useState({});
   const [route, setRoute] = useState('signin')
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [user, setUser] = useState({})
 
   const onInputChange = (event) => setInput(event.target.value);
   const onButtonSubmit = () => setImageUrl(input);
@@ -47,7 +48,7 @@ const App = () => {
           ?
           <div>
             <Logo />
-            <Rank />
+            <Rank user={user}/>
             <ImageLinkForm
               onInputChange={onInputChange}
               onButtonSubmit={onButtonSubmit}
@@ -59,8 +60,8 @@ const App = () => {
           </div>
           :
           (route === 'signin'
-            ? <SignIn onRouteChange={onRouteChange} />
-            : <Register onRouteChange={onRouteChange} />)
+            ? <SignIn onRouteChange={onRouteChange} loadUser={setUser}/>
+            : <Register onRouteChange={onRouteChange} loadUser={setUser}/>)
       }
     </div>
   );
