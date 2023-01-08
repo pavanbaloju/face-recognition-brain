@@ -10,6 +10,7 @@ import SignIn from './components/signin/SignIn';
 import Register from './components/register/Register';
 
 const faceDetectionApi = 'https://api.clarifai.com/v2/models/face-detection/versions/6dc7e46bc9124c5c8824be4822abe105/outputs';
+const updateImageEntriesApi = 'http://localhost:3010/image';
 
 const App = () => {
 
@@ -33,8 +34,14 @@ const App = () => {
         .then(response => response.json())
         .then(calculateFaceLocation)
         .then(setBox)
+        .then(() => {
+          fetch(updateImageEntriesApi, getUpdateEntriesRequest(user.id))
+            .then(response => response.json())
+            .then(count => setUser({ ...user, entries: count }))
+        })
         .catch(error => console.log('Something went wrong..', error));
     }
+    // eslint-disable-next-line
   }, [imageUrl]);
 
   return (
@@ -48,7 +55,7 @@ const App = () => {
           ?
           <div>
             <Logo />
-            <Rank user={user}/>
+            <Rank user={user} />
             <ImageLinkForm
               onInputChange={onInputChange}
               onButtonSubmit={onButtonSubmit}
@@ -60,8 +67,8 @@ const App = () => {
           </div>
           :
           (route === 'signin'
-            ? <SignIn onRouteChange={onRouteChange} loadUser={setUser}/>
-            : <Register onRouteChange={onRouteChange} loadUser={setUser}/>)
+            ? <SignIn onRouteChange={onRouteChange} loadUser={setUser} />
+            : <Register onRouteChange={onRouteChange} loadUser={setUser} />)
       }
     </div>
   );
@@ -92,6 +99,18 @@ const getRequestBody = (imageUrl) => {
   };
 }
 
+const getUpdateEntriesRequest = (id) => {
+  return {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      id: id
+    })
+  };
+}
+
 const calculateFaceLocation = (data) => {
   const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
   const image = document.getElementById('inputimage');
@@ -107,3 +126,5 @@ const calculateFaceLocation = (data) => {
 }
 
 export default App;
+
+
