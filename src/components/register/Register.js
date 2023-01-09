@@ -26,7 +26,7 @@ const Register = ({onRouteChange, loadUser}) => {
         fetch('http://localhost:3010/register', request)
             .then(response => response.json())
             .then(user => {
-                if(user){
+                if(user.id){
                     loadUser(user);
                     onRouteChange('signin');
                 }
