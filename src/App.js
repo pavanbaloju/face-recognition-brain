@@ -27,8 +27,15 @@ const App = () => {
     detect(input);
   }
   const onRouteChange = (route) => {
+    if (route === 'signout') {
+      clearState();
+    }
     setIsSignedIn(route === 'home');
     setRoute(route);
+  }
+  const clearState = () => {
+    setImageUrl('');
+    setInput('');
   }
 
   const detect = (imageUrl) => {
@@ -68,9 +75,9 @@ const App = () => {
             />
           </div>
           :
-          (route === 'signin'
-            ? <SignIn onRouteChange={onRouteChange} loadUser={setUser} />
-            : <Register onRouteChange={onRouteChange} loadUser={setUser} />)
+          ((route === 'register')
+            ? <Register onRouteChange={onRouteChange} loadUser={setUser} />
+            : <SignIn onRouteChange={onRouteChange} loadUser={setUser} />)
       }
     </div>
   );
