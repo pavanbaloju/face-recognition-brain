@@ -5,7 +5,7 @@ import ImageLinkForm from './components/imagelinkform/ImageLinkForm';
 import FaceRecognition from './components/facerecognition/FaceRecognition';
 import Rank from './components/rank/Rank';
 import ParticlesBg from 'particles-bg';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import SignIn from './components/signin/SignIn';
 import Register from './components/register/Register';
 
@@ -22,13 +22,16 @@ const App = () => {
   const [user, setUser] = useState({})
 
   const onInputChange = (event) => setInput(event.target.value);
-  const onButtonSubmit = () => setImageUrl(input);
+  const onButtonSubmit = () => {
+    setImageUrl(input);
+    detect(input);
+  }
   const onRouteChange = (route) => {
     setIsSignedIn(route === 'home');
     setRoute(route);
   }
 
-  useEffect(() => {
+  const detect = (imageUrl) => {
     if (imageUrl) {
       fetch(faceDetectionApi, getRequestBody(imageUrl))
         .then(response => response.json())
@@ -41,8 +44,7 @@ const App = () => {
         })
         .catch(error => console.log('Something went wrong..', error));
     }
-    // eslint-disable-next-line
-  }, [imageUrl]);
+  };
 
   return (
     <div>
