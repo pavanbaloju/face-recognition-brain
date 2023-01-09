@@ -9,7 +9,7 @@ import { useState } from 'react';
 import SignIn from './components/signin/SignIn';
 import Register from './components/register/Register';
 
-const faceDetectionApi = 'https://api.clarifai.com/v2/models/face-detection/versions/6dc7e46bc9124c5c8824be4822abe105/outputs';
+const faceDetectionApi = 'http://localhost:3010/detectface'
 const updateImageEntriesApi = 'http://localhost:3010/image';
 
 const App = () => {
@@ -88,23 +88,10 @@ const getRequestBody = (imageUrl) => {
   return {
     method: 'POST',
     headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Key e7299f110b3540829ee80279e7526851'
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      "user_app_id": {
-        "user_id": 'pavanbaloju',
-        "app_id": 'my-first-application'
-      },
-      "inputs": [
-        {
-          "data": {
-            "image": {
-              "url": imageUrl
-            }
-          }
-        }
-      ]
+      imageUrl: imageUrl
     })
   };
 }
