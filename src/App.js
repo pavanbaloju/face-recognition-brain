@@ -9,8 +9,7 @@ import { useState } from 'react';
 import SignIn from './components/signin/SignIn';
 import Register from './components/register/Register';
 
-const backendUrl = 'https://smart-brain-lay4.onrender.com/3010';
-
+const backendUrl = "https://smart-brain-lay4.onrender.com";
 const faceDetectionApi = backendUrl + '/detectface'
 const updateImageEntriesApi = backendUrl + '/image';
 const signInApi = backendUrl + "/signin";
