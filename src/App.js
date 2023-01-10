@@ -9,9 +9,7 @@ import { useState } from 'react';
 import SignIn from './components/signin/SignIn';
 import Register from './components/register/Register';
 
-const backendUrl = process.env.HOST
-  ? `https://${process.env.HOST}:${process.env.PORT}`
-  : 'http:localhost/3010';
+const backendUrl = 'https://smart-brain-lay4.onrender.com/3010';
 
 const faceDetectionApi = backendUrl + '/detectface'
 const updateImageEntriesApi = backendUrl + '/image';
