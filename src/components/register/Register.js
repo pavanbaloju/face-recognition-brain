@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Register = ({onRouteChange, loadUser}) => {
+const Register = ({onRouteChange, loadUser, registerApi}) => {
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -23,7 +23,7 @@ const Register = ({onRouteChange, loadUser}) => {
             })
         }
 
-        fetch('http://localhost:3010/register', request)
+        fetch(registerApi, request)
             .then(response => response.json())
             .then(user => {
                 if(user.id){

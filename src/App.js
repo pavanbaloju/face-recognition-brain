@@ -9,8 +9,14 @@ import { useState } from 'react';
 import SignIn from './components/signin/SignIn';
 import Register from './components/register/Register';
 
-const faceDetectionApi = 'http://localhost:3010/detectface'
-const updateImageEntriesApi = 'http://localhost:3010/image';
+const backendUrl = process.env.HOST
+  ? `https://${process.env.HOST}:${process.env.PORT}`
+  : 'http:localhost/3010';
+
+const faceDetectionApi = backendUrl + '/detectface'
+const updateImageEntriesApi = backendUrl + '/image';
+const signInApi = backendUrl + "/signin";
+const registerApi = backendUrl + "/register";
 
 const App = () => {
 
@@ -77,8 +83,8 @@ const App = () => {
           </div>
           :
           ((route === 'register')
-            ? <Register onRouteChange={onRouteChange} loadUser={setUser} />
-            : <SignIn onRouteChange={onRouteChange} loadUser={setUser} />)
+            ? <Register onRouteChange={onRouteChange} loadUser={setUser} registerApi={registerApi} />
+            : <SignIn onRouteChange={onRouteChange} loadUser={setUser} signInApi={signInApi} />)
       }
     </div>
   );

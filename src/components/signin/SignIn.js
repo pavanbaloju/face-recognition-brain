@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const SignIn = ({ onRouteChange, loadUser }) => {
+const SignIn = ({ onRouteChange, loadUser, signInApi }) => {
 
     const [signInEmail, setSignInEmail] = useState('');
     const [signInPass, setSignInPass] = useState('');
@@ -20,7 +20,7 @@ const SignIn = ({ onRouteChange, loadUser }) => {
             })
         }
 
-        fetch('http://localhost:3010/signin', request)
+        fetch(signInApi, request)
             .then(response => response.json())
             .then(user => {
                 if(user.id){
